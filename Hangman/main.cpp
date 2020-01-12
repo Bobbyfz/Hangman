@@ -11,10 +11,16 @@
 #include <ctime>
 #include <cstdlib>
 
+//constant that is defined as the max guesses before the game ends
+const int MAX_GUESSES = 6;
+
 using namespace std;
 
 void hangman(void);
 string pickWord(void);
+int letterFilling(string guessedChar,string secretWord,string &unkownWord);
+void guessWord(void);
+void end(void);
 
 int main(int argc, const char * argv[])
 {
@@ -34,7 +40,7 @@ int main(int argc, const char * argv[])
     cin>>choice;
     cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-    }while (choice != 'y'&&choice != 'Y'&&choice != 'n'&&choice != 'N');
+    }while (choice != 'y'&&choice != 'Y');
     
     hangman();
     
@@ -43,10 +49,57 @@ int main(int argc, const char * argv[])
 
 void hangman(void)
 {
-    string word = pickWord();
-    string unknownWord(word.length(),'*');
+    //character to keep track of the guessed letter
+    string guessedWord;
+    int numOfGuesses = 0;
+    string secretWord = pickWord();
+    //replaces the word with asterisks
+    string unknownWord(secretWord.length(),'*');
     
-    cout << unknownWord;
+    cout << "The mystery word is covered by asterisks\n";
+    cout << "Guess one letter at a time\n";
+    cout << "You'll have six tries to guess the word\n";
+    cout << "The unknown word is " << unknownWord << "\n";
+   //main loop of the game
+    while (numOfGuesses < MAX_GUESSES)
+    {
+        cout << "guess a letter of the unknown word or guess the word: ";
+        cin >> guessedWord;
+    
+        //did the user guess a character incorrect
+        if (letterFilling(guessedWord, secretWord, unknownWord) == 0&&guessedWord.size() == 1)
+        {
+            cout << "That letter is not in the word!\n";
+            numOfGuesses++;
+        }else
+        {
+            cout << "That letter is in the word!\n";
+            cout << "The unknown word is now "<<unknownWord<<"\n";
+        }
+        
+        
+        //checks to see if the user tries to guess the word
+        if (guessedWord.size() > 1)
+        {
+            if (guessedWord == secretWord)
+            {
+                cout << "You guessed the word!\n";
+                letterFilling(guessedWord, secretWord, unknownWord);
+                end();
+            }else
+            {
+                cout << "That was not the correct word, 2 guesses have been used.\n";
+                numOfGuesses += 2;
+            }
+        }
+        
+        if (unknownWord == secretWord)
+        {
+            cout << "You win!\n";
+            end();
+        }
+        cout << "You have " << MAX_GUESSES - numOfGuesses << " chance(s) left\n";
+    }
 }
 
 //function to randomly pick the word used for guessing
@@ -54,27 +107,62 @@ string pickWord(void)
 {
     string words[] =
     {
-        "mere"
-        "laughable"
-        "mother"
-        "detail"
-        "attempt"
-        "chief"
-        "annoying"
-        "immense"
-        "changeable"
-        "train"
-        "unnatural"
-        "loutish"
-        "government"
-        "smell"
-        "berserk"
+        "mere",
+        "laughable",
+        "mother",
+        "detail",
+        "attempt",
+        "chief",
+        "annoying",
+        "immense",
+        "changeable",
+        "train",
+        "unnatural",
+        "loutish",
+        "government",
+        "smell",
+        "berserk",
     };
     
     srand(time(NULL));
     
-    int randNum = rand() % 15 + 1;
+    int randNum = rand() % 15;
     
     string mainWord = words[randNum];
     return mainWord;
+}
+
+int letterFilling(string guessedChar,string secretWord,string &unknownWord)
+{
+    int match = 0;
+    
+    for (int i = 0;i < secretWord.length();i++)
+    {
+        //checks to see if guessed before
+        if (guessedChar[0] == unknownWord[i])
+        {
+            return 0;
+        }
+        //is the guessed character in the secret word
+        if (guessedChar[0] == secretWord[i])
+        {
+            unknownWord[i] = guessedChar[0];
+            match++;
+        }
+    }
+    
+    return match;
+}
+
+void guessWord(void)
+{
+    //TODO: Add a function to guess the whole word.
+    
+}
+
+void end(void)
+{
+    //TODO: Add a function that ends the game and asks user to replay.
+    cout << "Chu did it\n";
+    exit(0);
 }
