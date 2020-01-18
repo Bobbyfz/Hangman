@@ -31,14 +31,14 @@ int main(int argc, const char * argv[])
     //loop to select the name
     do
     {
-    cout << "Welcome to Hangman, what is your name?\n";
-    getline(cin,userName);
+        cout << "Welcome to Hangman, what is your name?\n";
+        getline(cin,userName);
     
-    cout << "Your name is: "<<userName<<"\n";
-    cout<<"Is that correct?(y/n)\n";
+        cout << "Your name is: "<<userName<<"\n";
+        cout<<"Is that correct?(y/n)\n";
     
-    cin>>choice;
-    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        cin>>choice;
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
     }while (choice != 'y'&&choice != 'Y');
     
@@ -96,10 +96,19 @@ void hangman(void)
         if (unknownWord == secretWord)
         {
             cout << "You win!\n";
+            cout << "The secret word was " << unknownWord << "\n";
             end();
         }
         cout << "You have " << MAX_GUESSES - numOfGuesses << " chance(s) left\n";
+        
+        //last if to see if the tries have run out and display the end word
+        if (numOfGuesses == MAX_GUESSES)
+        {
+            cout << "You have been hanged!\nThe secret word was "<< secretWord <<"\n";
+            end();
+        }
     }
+    
 }
 
 //function to randomly pick the word used for guessing
@@ -162,7 +171,21 @@ void guessWord(void)
 
 void end(void)
 {
-    //TODO: Add a function that ends the game and asks user to replay.
-    cout << "Chu did it\n";
-    exit(0);
+    char choice;
+    
+    do
+    {
+        cout << "Would you like to try again? (y/n)";
+        cin >> choice;
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }while (choice != 'n'&&choice != 'n');
+    
+    if (choice == 'y'&&choice == 'Y')
+    {
+        hangman();
+    }else if (choice == 'n'&&choice == 'N')
+    {
+        cout << "Thanks for playing!\n";
+        exit(0);
+    }
 }
