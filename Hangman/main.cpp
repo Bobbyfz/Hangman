@@ -71,7 +71,7 @@ void hangman(void)
         {
             cout << "That letter is not in the word!\n";
             numOfGuesses++;
-        }else
+        }else if (letterFilling(guessedWord, secretWord, unknownWord) != 0&&guessedWord.size() == 1)
         {
             cout << "That letter is in the word!\n";
             cout << "The unknown word is now "<<unknownWord<<"\n";
@@ -84,7 +84,7 @@ void hangman(void)
             if (guessedWord == secretWord)
             {
                 cout << "You guessed the word!\n";
-                letterFilling(guessedWord, secretWord, unknownWord);
+                cout << "The word was " << secretWord << "\n";
                 end();
             }else
             {
@@ -163,12 +163,6 @@ int letterFilling(string guessedChar,string secretWord,string &unknownWord)
     return match;
 }
 
-void guessWord(void)
-{
-    //TODO: Add a function to guess the whole word.
-    
-}
-
 void end(void)
 {
     char choice;
@@ -178,14 +172,16 @@ void end(void)
         cout << "Would you like to try again? (y/n)";
         cin >> choice;
         cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    }while (choice != 'n'&&choice != 'n');
+    }while (choice != 'y'&&choice != 'Y'&&choice != 'n'&&choice != 'N');
     
-    if (choice == 'y'&&choice == 'Y')
-    {
-        hangman();
-    }else if (choice == 'n'&&choice == 'N')
+    if (choice == 'n'||choice == 'N')
     {
         cout << "Thanks for playing!\n";
         exit(0);
     }
+    if (choice == 'y'||choice == 'Y')
+    {
+        hangman();
+    }
+  
 }
